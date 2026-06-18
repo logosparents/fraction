@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍕 分數歡樂餐廳 - 4年級分數學習遊戲 🎂</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Playful Text -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #FFFDF0; /* 溫馨鵝黃色 */
+        }
+        .font-playful {
+            font-family: 'Fredoka One', 'Noto Sans TC', sans-serif;
+        }
+        /* 卡通彈跳動畫 */
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .bounce-element {
+            animation: bounce-slow 3s infinite ease-in-out;
+        }
+        /* 卡片翻轉效果 */
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1.5rem;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden text-slate-800">
+
+    <!-- 頂部導航與星星欄 -->
+    <header class="bg-gradient-to-r from-amber-400 to-orange-500 shadow-lg text-white py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchScreen('home')">
+                <span class="text-4xl bounce-element">🍕</span>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-wider font-playful flex items-center gap-2">
+                        分數歡樂餐廳 <span class="text-sm bg-red-500 text-white px-2 py-0.5 rounded-full">小四挑戰版</span>
+                    </h1>
+                    <p class="text-xs text-amber-100 font-medium">像大廚一樣輕鬆學分數！Proper, Improper & Mixed Fractions</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- 姓名設定 -->
+                <div class="bg-amber-600/30 px-3 py-1.5 rounded-full flex items-center gap-2 border border-amber-300/40">
+                    <span class="text-xs font-bold text-amber-100">廚師名字:</span>
+                    <input type="text" id="chef-name" value="小廚神" onchange="updateName()" class="bg-transparent text-white font-bold w-20 text-center outline-none border-b border-white focus:border-yellow-300 text-sm">
+                </div>
+                <!-- 星星累計 -->
+                <div class="bg-yellow-300 text-amber-950 px-4 py-2 rounded-full font-black text-lg flex items-center gap-2 shadow-inner">
+                    <i class="fa-solid fa-star text-orange-500 text-xl animate-pulse"></i>
+                    <span id="star-count">0</span> 顆星
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主內容區 -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 sm:p-6">
+        
+        <!-- ==================== SCREEN 0: 主菜單 (Home) ==================== -->
+        <section id="screen-home" class="space-y-8">
+            <!-- 迎賓看板 -->
+            <div class="bg-gradient-to-br from-orange-100 via-amber-50 to-red-100 rounded-3xl p-6 sm:p-8 shadow-md border-4 border-amber-300 text-center relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 text-9xl opacity-10 pointer-events-none">🍕🍰🍹</div>
+                <h2 class="text-3xl sm:text-4xl font-black text-orange-600 mb-3">歡迎光臨！分數大餐準備好了！</h2>
+                <p class="text-base sm:text-lg text-slate-600 font-medium max-w-2xl mx-auto">
+                    請選擇今天的「主廚推薦料理」挑戰！完成每一道挑戰都可以賺取黃金星星 🌟，還能將你的學習成績單 WhatsApp 分享給爸爸媽媽看喔！
+                </p>
+                <div class="mt-6 flex flex-wrap gap-4 justify-center">
+                    <button onclick="switchScreen('video')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-2xl shadow-md transition duration-200 transform hover:-translate-y-1 flex items-center gap-2">
+                        <i class="fa-brands fa-youtube text-xl"></i> 觀看廚師放映室 (影片教學)
+                    </button>
+                    <button onclick="openReportModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3 rounded-2xl shadow-md transition duration-200 transform hover:-translate-y-1 flex items-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-xl"></i> 傳送學習進度給父母
+                    </button>
+                </div>
+            </div>
+
+            <!-- 八大分組料理菜單 (選關卡) -->
+            <div>
+                <h3 class="text-2xl font-black text-slate-700 mb-6 flex items-center gap-2 border-b-4 border-amber-300 pb-2">
+                    <span class="text-3xl">👨‍🍳</span> 今日主廚精選菜單 (學習關卡)
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- 關卡1：雙語閃卡 -->
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-slate-100 hover:border-amber-400 transition-all duration-300 hover:shadow-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-4xl">🃏</span>
+                                <span class="bg-pink-100 text-pink-700 font-extrabold text-xs px-2.5 py-1 rounded-full">基礎概念</span>
+                            </div>
+                            <h4 class="text-xl font-black text-slate-800 mb-2">1. 經典識分閃卡 (Flash Cards)</h4>
+                            <p class="text-sm text-slate-500 mb-4">點擊翻牌、發音！中英雙語發音，認識什麼是分子和分母。</p>
+                        </div>
+                        <button onclick="switchScreen('flashcard')" class="w-full bg-amber-400 hover:bg-amber-500 text-amber-950 font-black py-3 rounded-2xl transition-all">
+                            開啟閃卡 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- 關卡2：分數的分類 -->
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-slate-100 hover:border-amber-400 transition-all duration-300 hover:shadow-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-4xl">🍕</span>
+                                <span class="bg-purple-100 text-purple-700 font-extrabold text-xs px-2.5 py-1 rounded-full">分數分類</span>
+                            </div>
+                            <h4 class="text-xl font-black text-slate-800 mb-2">2. 點餐大作戰 (分類挑戰)</h4>
+                            <p class="text-sm text-slate-500 mb-4">快幫客人點餐！把真分數、假分數和帶分數正確分裝到盤子裡。</p>
+                        </div>
+                        <button onclick="switchScreen('classify')" class="w-full bg-amber-400 hover:bg-amber-500 text-amber-950 font-black py-3 rounded-2xl transition-all">
+                            開始點餐 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- 關卡3：假分數帶分數互化 -->
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-slate-100 hover:border-amber-400 transition-all duration-300 hover:shadow-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-4xl">🧁</span>
+                                <span class="bg-blue-100 text-blue-700 font-extrabold text-xs px-2.5 py-1 rounded-full">分數互化</span>
+                            </div>
+                            <h4 class="text-xl font-black text-slate-800 mb-2">3. 魔法烘焙坊 (互化訓練)</h4>
+                            <p class="text-sm text-slate-500 mb-4">切出正確的蛋糕！假分數與帶分數、整數之間的奇妙變化。</p>
+                        </div>
+                        <button onclick="switchScreen('convert')" class="w-full bg-amber-400 hover:bg-amber-500 text-amber-950 font-black py-3 rounded-2xl transition-all">
+                            開爐烘焙 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- 關卡4：擴分約分 -->
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-slate-100 hover:border-amber-400 transition-all duration-300 hover:shadow-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-4xl">🍹</span>
+                                <span class="bg-green-100 text-green-700 font-extrabold text-xs px-2.5 py-1 rounded-full">等值分數</span>
+                            </div>
+                            <h4 class="text-xl font-black text-slate-800 mb-2">4. 擴約分果汁調配店</h4>
+                            <p class="text-sm text-slate-500 mb-4">倒出一樣多（等值）的果汁！調配擴分、約分，調配出最佳比例！</p>
+                        </div>
+                        <button onclick="switchScreen('juice_bar')" class="w-full bg-amber-400 hover:bg-amber-500 text-amber-950 font-black py-3 rounded-2xl transition-all">
+                            調配果汁 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- 關卡5：比較分數 -->
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-slate-100 hover:border-amber-400 transition-all duration-300 hover:shadow-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-4xl">⚖️</span>
+                                <span class="bg-orange-100 text-orange-700 font-extrabold text-xs px-2.5 py-1 rounded-full">大小比較</span>
+                            </div>
+                            <h4 class="text-xl font-black text-slate-800 mb-2">5. 美食分量大比拼</h4>
+                            <p class="text-sm text-slate-500 mb-4">誰吃得比較多？比較同分母、同分子分數的大小，學會看分量。</p>
+                        </div>
+                        <button onclick="switchScreen('compare')" class="w-full bg-amber-400 hover:bg-amber-500 text-amber-950 font-black py-3 rounded-2xl transition-all">
+                            進店比拼 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- 關卡6：同分母加減與文字題 -->
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-slate-100 hover:border-amber-400 transition-all duration-300 hover:shadow-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-4xl">➕</span>
+                                <span class="bg-red-100 text-red-700 font-extrabold text-xs px-2.5 py-1 rounded-full">分數運算</span>
+                            </div>
+                            <h4 class="text-xl font-black text-slate-800 mb-2">6. 同分母加減與文字題</h4>
+                            <p class="text-sm text-slate-500 mb-4">多道結合比薩與生活情境的加減運算與經典應用文字題解答。</p>
+                        </div>
+                        <button onclick="switchScreen('add_sub')" class="w-full bg-amber-400 hover:bg-amber-500 text-amber-950 font-black py-3 rounded-2xl transition-all">
+                            開工加減法 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 其他資源推薦 -->
+            <div class="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-3xl p-6 border-2 border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+                <div class="flex items-center gap-4 text-center sm:text-left">
+                    <span class="text-5xl bounce-element">🎵</span>
+                    <div>
+                        <h4 class="text-xl font-extrabold text-emerald-800">打好數學基本功！</h4>
+                        <p class="text-sm text-emerald-600 font-medium">挑戰完分數，也要把乘法九九乘法表背得滾瓜爛熟唷！</p>
+                    </div>
+                </div>
+                <a href="https://logosparents.github.io/timestable/" target="_blank" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black px-6 py-3 rounded-2xl shadow-md whitespace-nowrap transition duration-200 transform hover:scale-105">
+                    <i class="fa-solid fa-music"></i> 乘法九因歌學習 APP
+                </a>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN 1: 廚師放映室 (Video) ==================== -->
+        <section id="screen-video" class="hidden space-y-6">
+            <button onclick="switchScreen('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> 返回主菜單
+            </button>
+            <div class="text-center">
+                <h3 class="text-3xl font-black text-slate-800">📺 廚師放映室</h3>
+                <p class="text-slate-500 font-medium mt-1">先看有趣的影片，學習分數的概念，等一下挑戰得更高分！</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 影片 1 -->
+                <div class="bg-white rounded-3xl p-4 shadow-md border border-slate-100">
+                    <h4 class="font-bold text-slate-700 mb-2 truncate">🎞️ 分數（一）認識概念</h4>
+                    <div class="aspect-video rounded-2xl overflow-hidden shadow">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/AMUZdmu1B5E" title="分數一" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">介紹基本的等分與分數的組成（分子分母）。</p>
+                </div>
+                <!-- 影片 2 -->
+                <div class="bg-white rounded-3xl p-4 shadow-md border border-slate-100">
+                    <h4 class="font-bold text-slate-700 mb-2 truncate">🎞️ 分數（二）分子分母關係</h4>
+                    <div class="aspect-video rounded-2xl overflow-hidden shadow">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/sJ-ZaXQ7Reg" title="分數二" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">進一步深入認識各種物件部分與整體分數轉換。</p>
+                </div>
+                <!-- 影片 3 -->
+                <div class="bg-white rounded-3xl p-4 shadow-md border border-slate-100">
+                    <h4 class="font-bold text-slate-700 mb-2 truncate">🎞️ 分數（三）分數的比較</h4>
+                    <div class="aspect-video rounded-2xl overflow-hidden shadow">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/qtPX1xk_muo" title="分數三" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">如何比較不同分數的大小與加減原理。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN 2: 經典識分閃卡 (Flash Card) ==================== -->
+        <section id="screen-flashcard" class="hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="switchScreen('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl">
+                    <i class="fa-solid fa-arrow-left"></i> 返回主頁
+                </button>
+                <div class="text-sm font-bold text-slate-400">關卡進度: <span id="fc-progress">1</span> / 6</div>
+            </div>
+
+            <div class="text-center">
+                <h3 class="text-3xl font-black text-slate-800">🃏 雙語識分閃卡</h3>
+                <p class="text-slate-500 font-medium">點擊閃卡會翻轉！點擊發音按鈕，聽聽中文與英文怎麼說！🔊</p>
+            </div>
+
+            <!-- 閃卡展示盒 -->
+            <div class="flex justify-center items-center py-6">
+                <div id="flash-card" class="flip-card w-80 h-96 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner shadow-2xl rounded-3xl">
+                        <!-- 閃卡正面 (圖案與分數) -->
+                        <div class="flip-card-front bg-gradient-to-br from-amber-400 to-yellow-300 text-amber-950 p-6 flex flex-col justify-between border-4 border-white">
+                            <div class="text-left font-black text-lg">正面 Face</div>
+                            
+                            <div class="flex flex-col items-center gap-4">
+                                <div id="fc-visual" class="w-40 h-40 bg-white rounded-full p-2 shadow-inner flex items-center justify-center">
+                                    <!-- 動態比薩 SVG -->
+                                </div>
+                                <div id="fc-fraction" class="text-5xl font-playful font-black border-b-4 border-amber-950 px-4">1/2</div>
+                            </div>
+
+                            <div class="text-sm font-bold text-amber-900 bg-amber-200/50 py-1.5 px-3 rounded-full">
+                                點擊翻轉看讀音 💡
+                            </div>
+                        </div>
+
+                        <!-- 閃卡背面 (讀音與說明) -->
+                        <div class="flip-card-back bg-slate-800 text-white p-6 flex flex-col justify-between border-4 border-slate-700">
+                            <div class="text-left font-black text-lg text-slate-400">背面 Back</div>
+
+                            <div class="space-y-6">
+                                <!-- 中文發音區 -->
+                                <div class="space-y-2">
+                                    <div class="text-xs text-slate-400 font-bold">中文讀作:</div>
+                                    <div class="flex justify-center items-center gap-3">
+                                        <span id="fc-zh" class="text-2xl font-black text-amber-300">二分之一</span>
+                                        <button onclick="event.stopPropagation(); speakFC('zh')" class="bg-amber-500 hover:bg-amber-600 text-white rounded-full w-10 h-10 flex items-center justify-center transition shadow">
+                                            <i class="fa-solid fa-volume-high"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 英文發音區 -->
+                                <div class="space-y-2">
+                                    <div class="text-xs text-slate-400 font-bold">English:</div>
+                                    <div class="flex justify-center items-center gap-3">
+                                        <span id="fc-en" class="text-2xl font-playful font-black text-cyan-300">One Half</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-xs text-slate-400">
+                                <span class="bg-slate-700 py-1 px-3 rounded-full" id="fc-desc">代表將一件食物平分 2 份，取 1 份。</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 控制盤 -->
+            <div class="flex justify-center gap-4">
+                <button onclick="prevFC()" class="bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold px-6 py-3 rounded-2xl shadow transition">
+                    <i class="fa-solid fa-chevron-left mr-1"></i> 上一張
+                </button>
+                <button onclick="nextFC()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-2xl shadow transition">
+                    下一張 <i class="fa-solid fa-chevron-right ml-1"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN 3: 點餐大作戰 (Classification) ==================== -->
+        <section id="screen-classify" class="hidden space-y-6">
+            <button onclick="switchScreen('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl">
+                <i class="fa-solid fa-arrow-left"></i> 返回主頁
+            </button>
+            <div class="text-center">
+                <h3 class="text-3xl font-black text-slate-800">🍕 點餐大作戰 (真/假/帶分數分類)</h3>
+                <p class="text-slate-500 font-medium">客人點餐囉！請判斷輸送帶上的分數，並點擊正確的餐盤分裝它！</p>
+            </div>
+
+            <!-- 目前點餐提示卡 -->
+            <div class="bg-amber-100 border-4 border-amber-300 rounded-3xl p-6 text-center max-w-md mx-auto shadow relative">
+                <div class="absolute top-2 left-3 text-xs bg-amber-400 text-amber-950 font-bold py-0.5 px-2.5 rounded-full">點餐看板</div>
+                <div class="text-slate-500 font-bold text-sm mt-2">請分裝這個分數：</div>
+                <!-- 要分類的分數 -->
+                <div id="classify-target" class="text-5xl font-playful font-black my-4 text-slate-800 inline-block">5/3</div>
+                <div id="classify-hint" class="text-xs text-slate-400 mt-1">（提示：分子比分母大）</div>
+            </div>
+
+            <!-- 分類餐盤 (按鈕形式) -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                
+                <!-- 真分數餐盤 -->
+                <button onclick="checkClassify('proper')" class="bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 border-4 border-green-400 p-6 rounded-3xl shadow-md transition-all duration-200 transform hover:-translate-y-1 text-center">
+                    <div class="text-4xl mb-2">🥗</div>
+                    <div class="font-black text-xl text-green-800">真分數</div>
+                    <div class="text-xs text-green-600 font-bold mt-1">分子 &lt; 分母</div>
+                    <div class="text-slate-400 text-[10px] mt-2">例如: 1/2, 3/4</div>
+                </button>
+
+                <!-- 假分數餐盤 -->
+                <button onclick="checkClassify('improper')" class="bg-gradient-to-br from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 border-4 border-red-400 p-6 rounded-3xl shadow-md transition-all duration-200 transform hover:-translate-y-1 text-center">
+                    <div class="text-4xl mb-2">🍔</div>
+                    <div class="font-black text-xl text-red-800">假分數</div>
+                    <div class="text-xs text-red-600 font-bold mt-1">分子 &ge; 分母</div>
+                    <div class="text-slate-400 text-[10px] mt-2">例如: 3/2, 4/4</div>
+                </button>
+
+                <!-- 帶分數餐盤 -->
+                <button onclick="checkClassify('mixed')" class="bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 border-4 border-purple-400 p-6 rounded-3xl shadow-md transition-all duration-200 transform hover:-translate-y-1 text-center">
+                    <div class="text-4xl mb-2">🍰</div>
+                    <div class="font-black text-xl text-purple-800">帶分數</div>
+                    <div class="text-xs text-purple-600 font-bold mt-1">整數 + 真分數</div>
+                    <div class="text-slate-400 text-[10px] mt-2">例如: 1又1/2, 2又3/4</div>
+                </button>
+
+            </div>
+
+            <!-- 反饋與計分 -->
+            <div id="classify-feedback" class="text-center h-8 font-black text-lg text-slate-700"></div>
+        </section>
+
+        <!-- ==================== SCREEN 4: 魔法烘焙坊 (Conversion) ==================== -->
+        <section id="screen-convert" class="hidden space-y-6">
+            <button onclick="switchScreen('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl">
+                <i class="fa-solid fa-arrow-left"></i> 返回主頁
+            </button>
+            <div class="text-center">
+                <h3 class="text-3xl font-black text-slate-800">🧁 魔法烘焙坊 (假帶互化 & 整數互化)</h3>
+                <p class="text-slate-500 font-medium">烤箱飄出香氣！請輸入正確的數值，將蛋糕轉化成客人要的樣式！</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                
+                <!-- 互化題目面板 -->
+                <div class="bg-orange-50 border-4 border-orange-300 rounded-3xl p-6 flex flex-col justify-between shadow">
+                    <div>
+                        <div class="text-orange-800 font-black text-xl mb-4 flex items-center gap-2">
+                            <span>🧁</span> 烘焙訂單挑戰
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-orange-100 shadow-inner flex justify-center items-center gap-6 min-h-[120px]">
+                            <!-- 題目分數展示 -->
+                            <div id="convert-question-display" class="text-4xl font-black text-slate-800">
+                                7/3
+                            </div>
+                            <div class="text-slate-400 text-2xl"><i class="fa-solid fa-right-long animate-pulse"></i></div>
+                            <!-- 輸入作答區 -->
+                            <div id="convert-answer-inputs" class="flex items-center gap-2">
+                                <!-- 動態產生的輸入框 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-3">
+                        <button onclick="checkConvert()" class="flex-grow bg-orange-500 hover:bg-orange-600 text-white font-black py-3 rounded-2xl shadow transition">
+                            出爐驗收！ ✔️
+                        </button>
+                        <button onclick="nextConvert()" class="bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold px-4 py-3 rounded-2xl shadow transition">
+                            換下一題 <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 視覺化比薩/蛋糕輔助模型 -->
+                <div class="bg-white rounded-3xl p-6 border-2 border-slate-100 shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-slate-700 mb-2">🍽️ 魔法微縮烤盤 (即時模型)</h4>
+                        <p class="text-xs text-slate-400 mb-4">這代表了多少盤完整的蛋糕與剩餘的切片：</p>
+                        <!-- 視覺盤子列表 -->
+                        <div id="convert-visualizer" class="flex flex-wrap justify-center gap-4 py-4">
+                            <!-- JS 動態繪製 SVG -->
+                        </div>
+                    </div>
+                    <div id="convert-feedback" class="text-center font-black text-lg min-h-[1.5rem]"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN 5: 擴約分果汁店 (Equivalent) ==================== -->
+        <section id="screen-juice_bar" class="hidden space-y-6">
+            <button onclick="switchScreen('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl">
+                <i class="fa-solid fa-arrow-left"></i> 返回主頁
+            </button>
+            <div class="text-center">
+                <h3 class="text-3xl font-black text-slate-800">🍹 擴約分果汁調配店</h3>
+                <p class="text-slate-500 font-medium">調配出等值（一樣多）的果汁！請填寫右杯缺失的分子或分母，調配出相同高度的果汁！</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- 果汁調配器 -->
+                <div class="bg-white rounded-3xl p-6 border-2 border-slate-100 shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-black text-slate-700 mb-4 flex items-center gap-2">
+                            <span>🧪</span> 擴約分等值對照杯
+                        </h4>
+                        <div class="flex justify-around items-center py-4 bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
+                            <!-- 左邊果汁杯 -->
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="text-xs font-bold text-slate-500">左杯果汁 (基準)</span>
+                                <div id="juice-glass-left" class="w-20 h-40 bg-slate-100 rounded-b-xl border-t-2 border-slate-300 relative overflow-hidden flex items-end">
+                                    <!-- 動態流體 -->
+                                </div>
+                                <span id="juice-fraction-left" class="font-black text-xl text-slate-700">1/2</span>
+                            </div>
+                            <!-- 等號 -->
+                            <span class="text-4xl font-black text-emerald-600">=</span>
+                            <!-- 右邊果汁杯 (動態響應鍵入的答案) -->
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="text-xs font-bold text-slate-500">右杯果汁 (目標)</span>
+                                <div id="juice-glass-right" class="w-20 h-40 bg-slate-100 rounded-b-xl border-t-2 border-slate-300 relative overflow-hidden flex items-end">
+                                    <!-- 動態流體 -->
+                                </div>
+                                <span id="juice-fraction-right" class="font-black text-xl text-emerald-600">?/4</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="juice-feedback" class="text-center font-black text-lg text-emerald-700 py-2"></div>
+                </div>
+
+                <!-- 調配任務卡 -->
+                <div class="bg-emerald-50 border-4 border-emerald-300 rounded-3xl p-6 flex flex-col justify-between shadow">
+                    <div class="space-y-4">
+                        <div class="text-emerald-800 font-black text-xl">🍹 等值果汁調配單</div>
+                        <p class="text-sm text-emerald-700">
+                            請在問號處填入正確的數字，使等式成立。注意：當你輸入答案時，右邊對照杯的果汁會即時注入喔！
+                        </p>
+                        
+                        <div class="bg-white p-6 rounded-2xl shadow-inner flex justify-center items-center gap-4 text-3xl font-black">
+                            <!-- 左分數 -->
+                            <div class="flex flex-col items-center">
+                                <span id="juice-q-left-num">2</span>
+                                <div class="w-10 h-1.5 bg-slate-800 my-1"></div>
+                                <span id="juice-q-left-den">4</span>
+                            </div>
+                            <span class="text-emerald-500">=</span>
+                            <!-- 右分數 (有問號) -->
+                            <div id="juice-q-right-container" class="flex items-center gap-2">
+                                <!-- 動態放置 input 框與分數 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-3">
+                        <button onclick="checkJuice()" class="flex-grow bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-2xl shadow transition">
+                            調配好，送給客人！ ✔️
+                        </button>
+                        <button onclick="nextJuice()" class="bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold px-4 py-3 rounded-2xl shadow transition">
+                            換調下一款 <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN 6: 美食分量大比拼 (Compare) ==================== -->
+        <section id="screen-compare" class="hidden space-y-6">
+            <button onclick="switchScreen('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl">
+                <i class="fa-solid fa-arrow-left"></i> 返回主頁
+            </button>
+            <div class="text-center">
+                <h3 class="text-3xl font-black text-slate-800">⚖️ 美食分量大比拼 (比較分數)</h3>
+                <p class="text-slate-500 font-medium">客人都想要大份的！比較 A 盤與 B 盤，選擇正確的符號「&gt;」、「&lt;」或「=」！</p>
+            </div>
+
+            <!-- 對比主控區 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center max-w-4xl mx-auto">
+                <!-- 左盤 (A) -->
+                <div class="bg-white rounded-3xl p-6 border-2 border-slate-100 shadow text-center flex flex-col items-center">
+                    <span class="text-xs bg-slate-100 text-slate-500 font-extrabold px-3 py-1 rounded-full mb-3">左盤 A</span>
+                    <div id="compare-visual-a" class="w-36 h-36 flex items-center justify-center p-2 bg-slate-50 rounded-full mb-4">
+                        <!-- 比薩 SVG A -->
+                    </div>
+                    <span id="compare-frac-a" class="text-3xl font-playful font-black text-slate-800">3/5</span>
+                </div>
+
+                <!-- 符號選擇區 -->
+                <div class="bg-yellow-50 border-4 border-yellow-300 rounded-3xl p-4 shadow-sm text-center space-y-4">
+                    <div class="text-slate-500 font-bold text-sm">請選擇大小關係：</div>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="submitCompare('>')" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-black text-2xl py-3 rounded-2xl transition shadow transform hover:-translate-y-0.5">
+                            大於 &gt;
+                        </button>
+                        <button onclick="submitCompare('<')" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-black text-2xl py-3 rounded-2xl transition shadow transform hover:-translate-y-0.5">
+                            小於 &lt;
+                        </button>
+                        <button onclick="submitCompare('=')" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-black text-2xl py-3 rounded-2xl transition shadow transform hover:-translate-y-0.5">
+                            等於 =
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 右盤 (B) -->
+                <div class="bg-white rounded-3xl p-6 border-2 border-slate-100 shadow text-center flex flex-col items-center">
+                    <span class="text-xs bg-slate-100 text-slate-500 font-extrabold px-3 py-1 rounded-full mb-3">右盤 B</span>
+                    <div id="compare-visual-b" class="w-36 h-36 flex items-center justify-center p-2 bg-slate-50 rounded-full mb-4">
+                        <!-- 比薩 SVG B -->
+                    </div>
+                    <span id="compare-frac-b" class="text-3xl font-playful font-black text-slate-800">4/5</span>
+                </div>
+            </div>
+
+            <!-- 反饋與下一題 -->
+            <div class="text-center py-4 space-y-2">
+                <div id="compare-feedback" class="font-black text-xl text-slate-700 h-8"></div>
+                <button onclick="nextCompare()" class="bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold px-6 py-2.5 rounded-xl transition">
+                    換一盤挑戰 <i class="fa-solid fa-chevron-right ml-1"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN 7: 同分母加減與文字題 (Add/Subtract & Word Problems) ==================== -->
+        <section id="screen-add_sub" class="hidden space-y-6">
+            <button onclick="switchScreen('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl">
+                <i class="fa-solid fa-arrow-left"></i> 返回主頁
+            </button>
+            <div class="text-center">
+                <h3 class="text-3xl font-black text-slate-800">➕ 分數加減與生活文字題 💬</h3>
+                <p class="text-slate-500 font-medium">解決客人用餐時遇到的分配問題，學習真正的加法、減法與文字應用題！</p>
+            </div>
+
+            <!-- 加減法大餐卡片 -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch max-w-5xl mx-auto">
+                
+                <!-- 1. 比薩操作模型 (視覺化) -->
+                <div class="bg-white rounded-3xl p-6 border-2 border-slate-100 shadow flex flex-col justify-between text-center">
+                    <div>
+                        <h4 class="font-black text-slate-700 mb-2">🍕 運算微縮披薩盤</h4>
+                        <p class="text-xs text-slate-400 mb-4">披薩廚房將你的加減法過程即時呈現：</p>
+                        <div class="flex justify-center items-center gap-4 py-4">
+                            <div id="calc-visual-left" class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center p-1"></div>
+                            <div id="calc-visual-op" class="text-xl font-bold text-slate-400">+</div>
+                            <div id="calc-visual-right" class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center p-1"></div>
+                        </div>
+                    </div>
+                    <div id="addsub-feedback" class="text-center font-black text-lg py-2 min-h-[1.5rem]"></div>
+                </div>
+
+                <!-- 2. 分數計算大作戰 -->
+                <div class="bg-red-50 border-4 border-red-300 rounded-3xl p-6 flex flex-col justify-between shadow">
+                    <div>
+                        <div class="text-red-800 font-black text-lg mb-2">🍽️ 分數計算機</div>
+                        <p class="text-xs text-slate-500 mb-4">注意同分母加減法時，分母不變，分子相加減喔！</p>
+                        
+                        <div class="bg-white p-6 rounded-2xl shadow-inner flex justify-center items-center gap-3 text-3xl font-black">
+                            <!-- 第一個分數 -->
+                            <div id="calc-part-1" class="flex flex-col items-center">
+                                <span>3</span>
+                                <div class="w-10 h-1 bg-slate-800 my-0.5"></div>
+                                <span>8</span>
+                            </div>
+                            <!-- 運算子 -->
+                            <span id="calc-op" class="text-red-500 text-2xl">+</span>
+                            <!-- 第二個分數 -->
+                            <div id="calc-part-2" class="flex flex-col items-center">
+                                <span>2</span>
+                                <div class="w-10 h-1 bg-slate-800 my-0.5"></div>
+                                <span>8</span>
+                            </div>
+                            <span class="text-slate-400">=</span>
+                            <!-- 輸入框 -->
+                            <div class="flex flex-col items-center bg-yellow-50 p-2 rounded-xl border border-yellow-300">
+                                <input type="number" id="calc-ans-num" class="w-12 text-center text-red-600 outline-none font-black bg-transparent border-b border-red-300" placeholder="?">
+                                <div class="w-10 h-1 bg-slate-800 my-1"></div>
+                                <input type="number" id="calc-ans-den" class="w-12 text-center text-slate-700 outline-none font-black bg-transparent" placeholder="?">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-2">
+                        <button onclick="checkCalc()" class="flex-grow bg-red-500 hover:bg-red-600 text-white font-black py-3 rounded-2xl shadow transition">
+                            計算送審 ✔️
+                        </button>
+                        <button onclick="nextCalc()" class="bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold px-3 py-3 rounded-2xl shadow transition">
+                            下一題
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. 情境文字應用題 -->
+                <div class="bg-orange-50 border-4 border-orange-300 rounded-3xl p-6 flex flex-col justify-between shadow">
+                    <div>
+                        <div class="text-orange-800 font-black text-lg mb-2">💬 生活文字應用題</div>
+                        <p class="text-xs text-slate-500 mb-4">根據餐廳生活情境，解答以下的應用題：</p>
+                        
+                        <div class="bg-white p-4 rounded-2xl shadow-inner text-sm font-bold text-slate-600 min-h-[140px] flex flex-col justify-between">
+                            <p id="word-question-text" class="leading-relaxed">
+                                姐姐買了一盒櫻桃有 9 顆。她吃了 3/9 盒，妹妹吃了 5/9 盒，兩姊妹共吃了幾分之幾盒？
+                            </p>
+                            <!-- 選擇題選項 -->
+                            <div id="word-question-options" class="grid grid-cols-2 gap-2 mt-4">
+                                <!-- 動態產生的按鈕 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <button onclick="nextWordQuestion()" class="w-full bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold py-2.5 rounded-xl shadow transition">
+                            下一道文字題 <i class="fa-solid fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 家長回報進度與回饋 Modal -->
+    <div id="report-modal" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-4 border-emerald-400 relative">
+            <button onclick="closeReportModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+            <div class="text-center space-y-4">
+                <span class="text-5xl">📩</span>
+                <h3 class="text-2xl font-black text-slate-800">發送進度給爸媽</h3>
+                <p class="text-sm text-slate-500 font-medium">
+                    大廚真厲害！要把今天在「分數歡樂餐廳」努力學到的分數進度跟父母分享嗎？這能幫他們了解你的超級實力喔！
+                </p>
+                
+                <!-- 進度預覽 -->
+                <div class="bg-emerald-50 rounded-2xl p-4 text-left border border-emerald-100 text-sm font-bold text-slate-600 space-y-1">
+                    <div>🧑‍🍳 廚師名稱：<span id="report-preview-name" class="text-emerald-700 font-extrabold">小廚神</span></div>
+                    <div>🌟 黃金星星：<span id="report-preview-stars" class="text-orange-500 font-extrabold">0 顆</span></div>
+                    <div>🎯 完成任務：<span id="report-preview-tasks" class="text-slate-500">暫無記錄</span></div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <button onclick="shareViaWhatsApp()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-2xl shadow transition flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp 發送
+                    </button>
+                    <button onclick="copyReportToClipboard()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-2xl shadow transition">
+                        複製文字 📋
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部資訊與聲明 -->
+    <footer class="bg-slate-800 text-slate-400 text-center py-6 px-4 mt-12 border-t-4 border-amber-400">
+        <div class="max-w-4xl mx-auto space-y-3">
+            <div class="flex flex-wrap justify-center items-center gap-4 text-sm font-semibold">
+                <a href="https://logosparents.github.io/timestable/" target="_blank" class="hover:text-amber-300 text-emerald-400 transition flex items-center gap-1">
+                    <i class="fa-solid fa-gamepad"></i> 乘法九因歌學習 APP
+                </a>
+                <span>|</span>
+                <span class="text-slate-500">專為小學四年級分數課程量身訂做</span>
+            </div>
+            <p class="text-xs font-playful tracking-widest text-slate-600">&copy; 2026 分數歡樂餐廳. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- 音效庫與邏輯 JS 實現 -->
+    <script>
+        // 全局狀態
+        let state = {
+            stars: 0,
+            chefName: '小廚神',
+            completedTasks: new Set(),
+            flashcardIndex: 0,
+            classifyTarget: { num: 1, den: 2, type: 'proper' },
+            convertQuestion: { type: 'improper_to_mixed', question: '7/3', ans: { integer: 2, num: 1, den: 3 }, visual: { total: 3, num: 7, den: 3 } },
+            juiceQuestion: { left: {num: 1, den: 2}, right: {num: 2, den: 4}, emptyPart: 'num', correctAns: 2 },
+            compareQuestion: { fracA: {num: 3, den: 5}, fracB: {num: 4, den: 5}, correctSign: '<' },
+            calcQuestion: { fracA: {num: 3, den: 8}, fracB: {num: 2, den: 8}, op: '+', correctFrac: {num: 5, den: 8} },
+            wordQuestionIndex: 0
+        };
+
+        // 識分閃卡資料
+        const FLASHCARD_DATA = [
+            { num: 1, den: 2, zh: "二分之一", en: "One Half", desc: "代表把一個比薩平分 2 份，吃掉了 1 份。" },
+            { num: 1, den: 3, zh: "三分之一", en: "One Third", desc: "代表把一個蛋糕平分 3 份，吃掉了 1 份。" },
+            { num: 2, den: 3, zh: "三分之二", en: "Two Thirds", desc: "代表把一個蛋糕平分 3 份，吃掉了其中的 2 份。" },
+            { num: 3, den: 4, zh: "四分之三", en: "Three Quarters", desc: "代表把一個果汁杯平分 4 等份，倒滿了 3 等份。" },
+            { num: 5, den: 8, zh: "八分之五", en: "Five Eighths", desc: "代表把一個大比薩平分 8 片，其中有 5 片烤好了。" },
+            { num: 1, den: 10, zh: "十分之一", en: "One Tenth", desc: "這是一個極小的分量。平分 10 份中只取其 1 份。" }
+        ];
+
+        // 情境文字題庫
+        const WORD_QUESTIONS = [
+            {
+                q: "1. 廚房烘焙出了 5 盤燒餅，每盤有 16 個。客人在店內吃掉兩打後，還剩餘燒餅多少個？ (提示：一打有 12 個)",
+                options: ["56 個", "60 個", "68 個", "70 個"],
+                ans: "56 個",
+                points: 2
+            },
+            {
+                q: "2. 姐姐買了一盒櫻桃。她吃了 3/9 盒，妹妹吃了 5/9 盒。兩姊妹共吃了這盒櫻桃的幾分之幾？",
+                options: ["8/9 盒", "2/9 盒", "1 盒", "7/9 盒"],
+                ans: "8/9 盒",
+                points: 2
+            },
+            {
+                q: "3. 小聰家裡養了三隻小貓。黃貓重 3/5 kg，白貓比黃貓重 1/5 kg。請問白貓重多少 kg？",
+                options: ["4/5 kg", "2/5 kg", "1 kg", "3/5 kg"],
+                ans: "4/5 kg",
+                points: 3
+            },
+            {
+                q: "4. 祖母去市場買了一包 Q 款茶葉重 4/5 kg。一星期後沖茶用去了 1/5 kg，還剩餘茶葉多少 kg？",
+                options: ["3/5 kg", "2/5 kg", "1/5 kg", "5/5 kg"],
+                ans: "3/5 kg",
+                points: 2
+            },
+            {
+                q: "5. 廚師做薄餅需要準備芝士。他買了兩份芝士，分別重 3/8 kg 和 5/8 kg。請問他買的芝士共重多少 kg？",
+                options: ["1 kg (或 8/8 kg)", "2/8 kg", "7/8 kg", "1又2/8 kg"],
+                ans: "1 kg (或 8/8 kg)",
+                points: 3
+            }
+        ];
+
+        // 預先載入瀏覽器語音庫
+        let synthVoices = [];
+        if ('speechSynthesis' in window) {
+            synthVoices = window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = () => {
+                synthVoices = window.speechSynthesis.getVoices();
+            };
+        }
+
+        // 切換頁面
+        function switchScreen(screenId) {
+            // 隱藏所有 Screen
+            ['screen-home', 'screen-video', 'screen-flashcard', 'screen-classify', 'screen-convert', 'screen-juice_bar', 'screen-compare', 'screen-add_sub'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            // 秀出指定 Screen
+            document.getElementById('screen-' + screenId).classList.remove('hidden');
+
+            // 進入特定關卡的初始化
+            if (screenId === 'flashcard') {
+                loadFlashcard();
+            } else if (screenId === 'classify') {
+                nextClassifyTarget();
+            } else if (screenId === 'convert') {
+                nextConvert();
+            } else if (screenId === 'juice_bar') {
+                nextJuice();
+            } else if (screenId === 'compare') {
+                nextCompare();
+            } else if (screenId === 'add_sub') {
+                nextCalc();
+                loadWordQuestion();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 修改廚師姓名
+        function updateName() {
+            const val = document.getElementById('chef-name').value.trim();
+            state.chefName = val ? val : '小廚神';
+        }
+
+        // 加星功能 (帶動效)
+        function addStars(num, taskName) {
+            state.stars += num;
+            document.getElementById('star-count').innerText = state.stars;
+            if (taskName) {
+                state.completedTasks.add(taskName);
+            }
+            // 彈跳動畫
+            const countEl = document.getElementById('star-count').parentElement;
+            countEl.classList.add('scale-110', 'bg-orange-400');
+            setTimeout(() => {
+                countEl.classList.remove('scale-110', 'bg-orange-400');
+            }, 300);
+        }
+
+        // 超強相容性語音播放系統 (完美相容 iOS Safari、Android、PC Chrome)
+        function speak(text, lang) {
+            if (!('speechSynthesis' in window)) {
+                console.warn("此瀏覽器/設備不支援 SpeechSynthesis 語音合成功能");
+                return;
+            }
+
+            try {
+                // 1. 先取消當前正在發出的所有聲音
+                window.speechSynthesis.cancel();
+            } catch (e) {
+                console.warn("SpeechSynthesis cancel error:", e);
+            }
+
+            // 2. 建立新的語音物件
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.volume = 1.0;
+            utterance.rate = 0.85; // 稍微放慢，適合小朋友聆聽
+            utterance.pitch = 1.05; // 稍微拉高，更顯親切活潑
+
+            // 3. 尋找相容設備本地的最佳語音人
+            try {
+                const voices = window.speechSynthesis.getVoices();
+                if (voices && voices.length > 0) {
+                    let bestVoice = null;
+                    if (lang.startsWith('en')) {
+                        bestVoice = voices.find(v => v.lang === 'en-US' || v.lang === 'en-GB' || v.lang.startsWith('en'));
+                    } else if (lang.startsWith('zh')) {
+                        // 優先尋找廣東話 (zh-HK / cantonese)，若無則 fallback
+                        bestVoice = voices.find(v => v.lang === 'zh-HK' || v.lang.includes('HK') || v.lang.toLowerCase().includes('cantonese'));
+                        if (!bestVoice) {
+                            bestVoice = voices.find(v => v.lang.startsWith('zh'));
+                        }
+                    }
+                    if (bestVoice) {
+                        utterance.voice = bestVoice;
+                    }
+                }
+            } catch (e) {
+                console.warn("尋找語音庫失敗，將使用瀏覽器預設語音人發聲:", e);
+            }
+
+            // 4. 重點：使用 80 毫秒微小延遲，防止某些瀏覽器(尤其是 iOS Safari / Chrome)在 cancel() 後立刻 speak() 導致語音卡死不出聲
+            setTimeout(() => {
+                try {
+                    window.speechSynthesis.speak(utterance);
+                } catch (e) {
+                    console.error("語音發聲播放失敗:", e);
+                }
+            }, 80);
+        }
+
+        // ==================== 1. 識分閃卡功能 ====================
+        function loadFlashcard() {
+            const data = FLASHCARD_DATA[state.flashcardIndex];
+            document.getElementById('fc-progress').innerText = (state.flashcardIndex + 1);
+            
+            // 重置翻面
+            document.getElementById('flash-card').classList.remove('flipped');
+            
+            // 寫入數據
+            document.getElementById('fc-fraction').innerHTML = `<span class="text-slate-800">${data.num}</span><div class="h-1 bg-amber-950 w-full my-1"></div><span class="text-slate-800">${data.den}</span>`;
+            document.getElementById('fc-zh').innerText = data.zh;
+            document.getElementById('fc-en').innerText = data.en;
+            document.getElementById('fc-desc').innerText = data.desc;
+
+            // 繪製 SVG 比薩
+            drawPizzaSVG('fc-visual', data.num, data.den);
+            
+            addStars(1, '探索識分閃卡');
+        }
+
+        function speakFC(lang) {
+            const data = FLASHCARD_DATA[state.flashcardIndex];
+            if (lang === 'zh') {
+                speak(data.zh, 'zh-HK');
+            } else {
+                speak(data.en, 'en-US');
+            }
+        }
+
+        function nextFC() {
+            state.flashcardIndex = (state.flashcardIndex + 1) % FLASHCARD_DATA.length;
+            loadFlashcard();
+        }
+
+        function prevFC() {
+            state.flashcardIndex = (state.flashcardIndex - 1 + FLASHCARD_DATA.length) % FLASHCARD_DATA.length;
+            loadFlashcard();
+        }
+
+        // 輔助函數：繪製比薩圓圈 SVG 
+        function drawPizzaSVG(containerId, num, den, filledColor = '#f97316', emptyColor = '#fef08a') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            let slices = '';
+            const cx = 50;
+            const cy = 50;
+            const r = 40;
+
+            if (den === 1) {
+                slices += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${filledColor}" stroke="#ea580c" stroke-width="2"/>`;
+            } else {
+                for (let i = 0; i < den; i++) {
+                    const startAngle = (i * 360) / den - 90;
+                    const endAngle = ((i + 1) * 360) / den - 90;
+                    
+                    const x1 = cx + r * Math.cos((startAngle * Math.PI) / 180);
+                    const y1 = cy + r * Math.sin((startAngle * Math.PI) / 180);
+                    const x2 = cx + r * Math.cos((endAngle * Math.PI) / 180);
+                    const y2 = cy + r * Math.sin((endAngle * Math.PI) / 180);
+
+                    const largeArcFlag = 0;
+                    const pathData = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
+                    const color = i < num ? filledColor : emptyColor;
+                    
+                    slices += `<path d="${pathData}" fill="${color}" stroke="#ea580c" stroke-width="1.5" />`;
+                }
+            }
+
+            container.innerHTML = `
+                <svg viewBox="0 0 100 100" class="w-full h-full bounce-element">
+                    ${slices}
+                    <circle cx="${cx}" cy="${cy}" r="3" fill="#9a3412"/>
+                </svg>
+            `;
+        }
+
+        // ==================== 2. 點餐大作戰 (Classification) ====================
+        function nextClassifyTarget() {
+            const types = ['proper', 'improper', 'mixed'];
+            const randType = types[Math.floor(Math.random() * types.length)];
+            let num, den, text;
+
+            if (randType === 'proper') {
+                den = Math.floor(Math.random() * 8) + 3; // 3~10
+                num = Math.floor(Math.random() * (den - 1)) + 1; // 1 ~ den-1
+                text = `<div class="flex flex-col items-center"><span>${num}</span><div class="w-8 h-1 bg-slate-800 my-0.5"></div><span>${den}</span></div>`;
+                document.getElementById('classify-hint').innerText = "提示：分子比分母小。";
+            } else if (randType === 'improper') {
+                den = Math.floor(Math.random() * 6) + 2; // 2~7
+                num = den + Math.floor(Math.random() * 5); // num >= den
+                text = `<div class="flex flex-col items-center"><span>${num}</span><div class="w-8 h-1 bg-slate-800 my-0.5"></div><span>${den}</span></div>`;
+                document.getElementById('classify-hint').innerText = "提示：分子大於或等於分母。";
+            } else {
+                const integer = Math.floor(Math.random() * 3) + 1; // 1~3
+                den = Math.floor(Math.random() * 5) + 3; // 3~7
+                num = Math.floor(Math.random() * (den - 1)) + 1; // 1 ~ den-1
+                text = `<div class="flex items-center gap-1"><span class="text-4xl text-purple-600">${integer}</span><div class="flex flex-col items-center text-xl"><span>${num}</span><div class="w-6 h-0.5 bg-slate-800 my-0.5"></div><span>${den}</span></div></div>`;
+                document.getElementById('classify-hint').innerText = "提示：含有一個整數和一個真分數。";
+            }
+
+            state.classifyTarget = { num, den, type: randType, htmlText: text };
+            document.getElementById('classify-target').innerHTML = text;
+            document.getElementById('classify-feedback').innerText = "";
+        }
+
+        function checkClassify(selectedType) {
+            const correctType = state.classifyTarget.type;
+            const feedbackEl = document.getElementById('classify-feedback');
+
+            if (selectedType === correctType) {
+                feedbackEl.innerHTML = `<span class="text-green-500">🎉 做得好！分類正確！ (+3 星)</span>`;
+                addStars(3, '點餐大作戰');
+                speak('答對了，做得好！', 'zh-HK');
+                setTimeout(nextClassifyTarget, 1500);
+            } else {
+                feedbackEl.innerHTML = `<span class="text-red-500">❌ 哎呀，分錯盤子囉！再想一想吧！</span>`;
+                speak('再想一想吧！', 'zh-HK');
+            }
+        }
+
+        // ==================== 3. 魔法烘焙坊 (Conversion) ====================
+        function nextConvert() {
+            document.getElementById('convert-feedback').innerText = "";
+            const types = ['improper_to_mixed', 'mixed_to_improper', 'integer_to_improper'];
+            const randType = types[Math.floor(Math.random() * types.length)];
+            
+            let den = Math.floor(Math.random() * 4) + 2; // 2~5
+            let integer = Math.floor(Math.random() * 3) + 1; // 1~3
+            let num = Math.floor(Math.random() * (den - 1)) + 1; // 1 ~ den-1
+            
+            if (randType === 'improper_to_mixed') {
+                const totalNum = integer * den + num;
+                state.convertQuestion = {
+                    type: randType,
+                    questionHtml: `<div class="flex flex-col items-center"><span>${totalNum}</span><div class="w-10 h-1 bg-slate-800 my-0.5"></div><span>${den}</span></div>`,
+                    ans: { integer, num, den },
+                    visual: { totalNum, den }
+                };
+                
+                document.getElementById('convert-question-display').innerHTML = state.convertQuestion.questionHtml;
+                document.getElementById('convert-answer-inputs').innerHTML = `
+                    <input type="number" id="ans-int" class="w-12 text-center text-3xl font-black bg-orange-100 rounded-xl py-2 outline-none border-2 border-orange-300" placeholder="整">
+                    <div class="flex flex-col items-center">
+                        <input type="number" id="ans-num" class="w-12 text-center font-black bg-orange-100 rounded-xl py-1 outline-none border-2 border-orange-300" placeholder="子">
+                        <div class="w-8 h-1 bg-slate-800 my-1"></div>
+                        <input type="number" id="ans-den" class="w-12 text-center font-black bg-orange-100 rounded-xl py-1 outline-none border-2 border-orange-300" placeholder="母">
+                    </div>
+                `;
+            } else if (randType === 'mixed_to_improper') {
+                const totalNum = integer * den + num;
+                state.convertQuestion = {
+                    type: randType,
+                    questionHtml: `<div class="flex items-center gap-1"><span class="text-5xl text-orange-600">${integer}</span><div class="flex flex-col items-center text-2xl"><span>${num}</span><div class="w-8 h-0.5 bg-slate-800 my-0.5"></div><span>${den}</span></div></div>`,
+                    ans: { num: totalNum, den },
+                    visual: { totalNum, den }
+                };
+
+                document.getElementById('convert-question-display').innerHTML = state.convertQuestion.questionHtml;
+                document.getElementById('convert-answer-inputs').innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <input type="number" id="ans-num" class="w-12 text-center font-black bg-orange-100 rounded-xl py-2 outline-none border-2 border-orange-300 text-xl" placeholder="子">
+                        <div class="w-10 h-1 bg-slate-800 my-1"></div>
+                        <input type="number" id="ans-den" class="w-12 text-center font-black bg-orange-100 rounded-xl py-2 outline-none border-2 border-orange-300 text-xl" placeholder="母">
+                    </div>
+                `;
+            } else {
+                const totalNum = integer * den;
+                state.convertQuestion = {
+                    type: randType,
+                    questionHtml: `<span class="text-5xl text-orange-600">${integer}</span>`,
+                    ans: { num: totalNum, den },
+                    visual: { totalNum, den }
+                };
+
+                document.getElementById('convert-question-display').innerHTML = state.convertQuestion.questionHtml;
+                document.getElementById('convert-answer-inputs').innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <input type="number" id="ans-num" class="w-12 text-center font-black bg-orange-100 rounded-xl py-2 outline-none border-2 border-orange-300 text-xl" placeholder="子">
+                        <div class="w-10 h-1 bg-slate-800 my-1"></div>
+                        <span class="text-3xl text-slate-700">${den}</span>
+                        <input type="hidden" id="ans-den" value="${den}">
+                    </div>
+                `;
+            }
+
+            drawConvertVisualizer(state.convertQuestion.visual.totalNum, state.convertQuestion.visual.den);
+        }
+
+        function drawConvertVisualizer(totalNum, den) {
+            const visualizer = document.getElementById('convert-visualizer');
+            visualizer.innerHTML = '';
+            
+            const fullPlates = Math.floor(totalNum / den);
+            const partialNum = totalNum % den;
+            const totalPlatesNeeded = Math.ceil(totalNum / den);
+
+            for (let i = 0; i < totalPlatesNeeded; i++) {
+                const div = document.createElement('div');
+                div.className = 'w-16 h-16 bg-orange-100 rounded-full border border-orange-200 flex items-center justify-center';
+                div.id = 'convert-plate-' + i;
+                visualizer.appendChild(div);
+
+                if (i < fullPlates) {
+                    drawPizzaSVG('convert-plate-' + i, den, den, '#f97316', '#ffedd5');
+                } else {
+                    drawPizzaSVG('convert-plate-' + i, partialNum, den, '#f97316', '#ffedd5');
+                }
+            }
+        }
+
+        function checkConvert() {
+            const q = state.convertQuestion;
+            const feedbackEl = document.getElementById('convert-feedback');
+            let isCorrect = false;
+
+            if (q.type === 'improper_to_mixed') {
+                const valInt = parseInt(document.getElementById('ans-int').value);
+                const valNum = parseInt(document.getElementById('ans-num').value);
+                const valDen = parseInt(document.getElementById('ans-den').value);
+
+                if (valInt === q.ans.integer && valNum === q.ans.num && valDen === q.ans.den) {
+                    isCorrect = true;
+                }
+            } else {
+                const valNum = parseInt(document.getElementById('ans-num').value);
+                const valDen = parseInt(document.getElementById('ans-den').value);
+
+                if (valNum === q.ans.num && valDen === q.ans.den) {
+                    isCorrect = true;
+                }
+            }
+
+            if (isCorrect) {
+                feedbackEl.innerHTML = `<span class="text-green-500">🎂 做得好！出爐正確！ (+5 星)</span>`;
+                addStars(5, '魔法烘焙坊');
+                speak('烘焙成功，做得好！', 'zh-HK');
+                setTimeout(nextConvert, 1500);
+            } else {
+                feedbackEl.innerHTML = `<span class="text-red-500">❌ 比例不太對喔，再微調一下！</span>`;
+                speak('再想一想吧！', 'zh-HK');
+            }
+        }
+
+        // ==================== 4. 擴約分果汁店 (Equivalent) ====================
+        function nextJuice() {
+            document.getElementById('juice-feedback').innerText = "";
+            
+            const isExpansion = Math.random() > 0.5;
+            let leftNum, leftDen, rightNum, rightDen;
+
+            if (isExpansion) {
+                leftDen = Math.floor(Math.random() * 3) + 2; // 2~4
+                leftNum = Math.floor(Math.random() * (leftDen - 1)) + 1; // 1~leftDen-1
+                const factor = Math.floor(Math.random() * 2) + 2; // 2~3
+                rightDen = leftDen * factor;
+                rightNum = leftNum * factor;
+                
+                state.juiceQuestion = {
+                    left: { num: leftNum, den: leftDen },
+                    right: { num: rightNum, den: rightDen },
+                    emptyPart: 'right_num',
+                    correctAns: rightNum
+                };
+            } else {
+                const factor = Math.floor(Math.random() * 2) + 2; // 2~3
+                rightDen = Math.floor(Math.random() * 3) + 2; // 2~4
+                rightNum = Math.floor(Math.random() * (rightDen - 1)) + 1;
+                
+                leftDen = rightDen * factor;
+                leftNum = rightNum * factor;
+
+                state.juiceQuestion = {
+                    left: { num: leftNum, den: leftDen },
+                    right: { num: rightNum, den: rightDen },
+                    emptyPart: 'right_den',
+                    correctAns: rightDen
+                };
+            }
+
+            // 更新左杯基準資料與繪製
+            document.getElementById('juice-fraction-left').innerHTML = `<div class="flex flex-col items-center"><span>${state.juiceQuestion.left.num}</span><div class="w-6 h-0.5 bg-slate-500 my-0.5"></div><span>${state.juiceQuestion.left.den}</span></div>`;
+            drawJuiceGlass('juice-glass-left', state.juiceQuestion.left.num, state.juiceQuestion.left.den);
+
+            // 初始狀態下：右杯是空的（0 分量），讓小朋友能夠主動思考思考！
+            drawJuiceGlass('juice-glass-right', 0, state.juiceQuestion.right.den);
+
+            // 更新調配單
+            document.getElementById('juice-q-left-num').innerText = state.juiceQuestion.left.num;
+            document.getElementById('juice-q-left-den').innerText = state.juiceQuestion.left.den;
+
+            const rightContainer = document.getElementById('juice-q-right-container');
+            if (state.juiceQuestion.emptyPart === 'right_num') {
+                rightContainer.innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <input type="number" id="juice-ans-input" class="w-12 text-center font-black bg-emerald-100 rounded-xl py-1 outline-none border-2 border-emerald-300 text-xl text-emerald-700" placeholder="?">
+                        <div class="w-10 h-1 bg-slate-800 my-1"></div>
+                        <span class="text-3xl text-slate-700">${state.juiceQuestion.right.den}</span>
+                    </div>
+                `;
+            } else {
+                rightContainer.innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <span class="text-3xl text-slate-700">${state.juiceQuestion.right.num}</span>
+                        <div class="w-10 h-1 bg-slate-800 my-1"></div>
+                        <input type="number" id="juice-ans-input" class="w-12 text-center font-black bg-emerald-100 rounded-xl py-1 outline-none border-2 border-emerald-300 text-xl text-emerald-700" placeholder="?">
+                    </div>
+                `;
+            }
+
+            // 綁定輸入監聽事件，實現右側杯子果汁高度和標籤的「即時響應式」注入！
+            const ansInput = document.getElementById('juice-ans-input');
+            ansInput.addEventListener('input', updateJuiceDisplay);
+            
+            // 首次加載渲染（此時尚未鍵入，右杯標籤應顯示為有問號的樣式，液體為0）
+            updateJuiceDisplay();
+        }
+
+        // 核心調試：根據小朋友的即時鍵入，動態渲染右側杯子，完全封鎖「預先洩露答案」
+        function updateJuiceDisplay() {
+            const inputEl = document.getElementById('juice-ans-input');
+            if (!inputEl) return;
+
+            const val = parseInt(inputEl.value) || 0;
+            const q = state.juiceQuestion;
+
+            let displayNum = q.right.num;
+            let displayDen = q.right.den;
+
+            // 根據鍵入動態替換問號部分的字元
+            if (q.emptyPart === 'right_num') {
+                displayNum = val > 0 ? val : '?';
+            } else {
+                displayDen = val > 0 ? val : '?';
+            }
+
+            // 即時更新右杯正下方的分數標籤 (用鮮明的紅色高亮未答部分)
+            document.getElementById('juice-fraction-right').innerHTML = `
+                <div class="flex flex-col items-center">
+                    <span class="${displayNum === '?' ? 'text-rose-500 font-extrabold animate-pulse' : 'text-emerald-600'}">${displayNum}</span>
+                    <div class="w-6 h-0.5 bg-slate-500 my-0.5"></div>
+                    <span class="${displayDen === '?' ? 'text-rose-500 font-extrabold animate-pulse' : 'text-emerald-600'}">${displayDen}</span>
+                </div>
+            `;
+
+            // 即時響應：動態繪製右邊果汁杯的液體高度
+            if (val > 0) {
+                let currentNum = q.emptyPart === 'right_num' ? val : q.right.num;
+                let currentDen = q.emptyPart === 'right_den' ? val : q.right.den;
+                // 限制不能輸入荒謬的大值導致繪圖崩潰
+                if (currentDen > 0) {
+                    drawJuiceGlass('juice-glass-right', currentNum, currentDen);
+                }
+            } else {
+                // 未輸入時，果汁高度為0，僅繪製杯身刻度
+                drawJuiceGlass('juice-glass-right', 0, q.right.den);
+            }
+        }
+
+        // 畫果汁杯 SVG 
+        function drawJuiceGlass(containerId, num, den) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            // 限制最高高度不超過100%
+            const heightPercentage = Math.min(100, Math.max(0, Math.round((num / den) * 100)));
+            
+            // 繪製杯壁刻度
+            let grid = '';
+            for (let i = 1; i < den; i++) {
+                const y = 100 - (i * 100) / den;
+                grid += `<line x1="5" y1="${y}" x2="15" y2="${y}" stroke="#94a3b8" stroke-width="1.5" />`;
+            }
+
+            container.innerHTML = `
+                <svg viewBox="0 0 100 100" class="w-full h-full" preserveAspectRatio="none">
+                    <!-- 液體 (採用綠色青檸果汁色調) -->
+                    <rect x="0" y="${100 - heightPercentage}" width="100" height="${heightPercentage}" fill="#10b981" fill-opacity="0.85" />
+                    <!-- 杯壁刻度線 -->
+                    ${grid}
+                </svg>
+            `;
+        }
+
+        function checkJuice() {
+            const val = parseInt(document.getElementById('juice-ans-input').value);
+            const feedbackEl = document.getElementById('juice-feedback');
+
+            if (val === state.juiceQuestion.correctAns) {
+                feedbackEl.innerHTML = `<span class="text-green-600">🍹 做得好！果汁甜度一致！ (+4 星)</span>`;
+                addStars(4, '等值果汁調配');
+                speak('果汁調配成功，做得好！', 'zh-HK');
+                setTimeout(nextJuice, 1500);
+            } else {
+                feedbackEl.innerHTML = `<span class="text-red-500">❌ 高度不一樣高喔，調配失敗！</span>`;
+                speak('再想一想吧！', 'zh-HK');
+            }
+        }
+
+        // ==================== 5. 美食分量大比拼 (Compare) ====================
+        function nextCompare() {
+            document.getElementById('compare-feedback').innerText = "";
+
+            const isSameDenominator = Math.random() > 0.5;
+            let fracA, fracB, sign;
+
+            if (isSameDenominator) {
+                const den = Math.floor(Math.random() * 6) + 4; // 4~9
+                const numA = Math.floor(Math.random() * (den - 1)) + 1;
+                let numB = Math.floor(Math.random() * (den - 1)) + 1;
+                while (numB === numA) {
+                    numB = Math.floor(Math.random() * (den - 1)) + 1;
+                }
+
+                fracA = { num: numA, den };
+                fracB = { num: numB, den };
+            } else {
+                const num = Math.floor(Math.random() * 3) + 2; // 2~4
+                const denA = num + Math.floor(Math.random() * 4) + 1; // denA > num
+                let denB = num + Math.floor(Math.random() * 4) + 1;
+                while (denB === denA) {
+                    denB = num + Math.floor(Math.random() * 4) + 1;
+                }
+
+                fracA = { num, den: denA };
+                fracB = { num, den: denB };
+            }
+
+            const valA = fracA.num / fracA.den;
+            const valB = fracB.num / fracB.den;
+            sign = valA > valB ? '>' : (valA < valB ? '<' : '=');
+
+            state.compareQuestion = { fracA, fracB, correctSign: sign };
+
+            document.getElementById('compare-frac-a').innerHTML = `<div class="flex flex-col items-center"><span>${fracA.num}</span><div class="w-8 h-1 bg-slate-800 my-0.5"></div><span>${fracA.den}</span></div>`;
+            document.getElementById('compare-frac-b').innerHTML = `<div class="flex flex-col items-center"><span>${fracB.num}</span><div class="w-8 h-1 bg-slate-800 my-0.5"></div><span>${fracB.den}</span></div>`;
+            
+            drawPizzaSVG('compare-visual-a', fracA.num, fracA.den, '#f97316', '#ffedd5');
+            drawPizzaSVG('compare-visual-b', fracB.num, fracB.den, '#f97316', '#ffedd5');
+        }
+
+        function submitCompare(selectedSign) {
+            const correctSign = state.compareQuestion.correctSign;
+            const feedbackEl = document.getElementById('compare-feedback');
+
+            if (selectedSign === correctSign) {
+                feedbackEl.innerHTML = `<span class="text-green-500">🎉 做得好！完全正確！ (+3 星)</span>`;
+                addStars(3, '美食大比拼');
+                speak('答對了，做得好！', 'zh-HK');
+                setTimeout(nextCompare, 1500);
+            } else {
+                feedbackEl.innerHTML = `<span class="text-red-500">❌ 份量看錯了喔！看清楚圖案。</span>`;
+                speak('再想一想吧！', 'zh-HK');
+            }
+        }
+
+        // ==================== 6. 同分母加減與文字題 ====================
+        function nextCalc() {
+            document.getElementById('calc-ans-num').value = "";
+            document.getElementById('calc-ans-den').value = "";
+            document.getElementById('addsub-feedback').innerText = "";
+
+            const isAddition = Math.random() > 0.5;
+            const den = Math.floor(Math.random() * 6) + 4; // 4~9
+            let numA, numB, op, ansNum;
+
+            if (isAddition) {
+                numA = Math.floor(Math.random() * (den - 2)) + 1; // 1 ~ den-2
+                numB = Math.floor(Math.random() * (den - numA - 1)) + 1; // 相加不超過 den-1
+                op = '+';
+                ansNum = numA + numB;
+            } else {
+                numA = Math.floor(Math.random() * (den - 2)) + 2; // 2 ~ den-1
+                numB = Math.floor(Math.random() * (numA - 1)) + 1; // numB < numA
+                op = '-';
+                ansNum = numA - numB;
+            }
+
+            state.calcQuestion = {
+                fracA: { num: numA, den },
+                fracB: { num: numB, den },
+                op,
+                correctFrac: { num: ansNum, den }
+            };
+
+            document.getElementById('calc-part-1').innerHTML = `<span>${numA}</span><div class="w-6 h-0.5 bg-slate-800 my-0.5"></div><span>${den}</span>`;
+            document.getElementById('calc-op').innerText = op;
+            document.getElementById('calc-part-2').innerHTML = `<span>${numB}</span><div class="w-6 h-0.5 bg-slate-800 my-0.5"></div><span>${den}</span>`;
+
+            drawPizzaSVG('calc-visual-left', numA, den, '#ef4444', '#fee2e2');
+            document.getElementById('calc-visual-op').innerText = op;
+            drawPizzaSVG('calc-visual-right', numB, den, '#ef4444', '#fee2e2');
+        }
+
+        function checkCalc() {
+            const valNum = parseInt(document.getElementById('calc-ans-num').value);
+            const valDen = parseInt(document.getElementById('calc-ans-den').value);
+            const feedbackEl = document.getElementById('addsub-feedback');
+            const q = state.calcQuestion;
+
+            if (valNum === q.correctFrac.num && valDen === q.correctFrac.den) {
+                feedbackEl.innerHTML = `<span class="text-green-500">🎉 做得好！比薩計算正確！ (+4 星)</span>`;
+                addStars(4, '同分母加減法');
+                speak('計算正確，做得好！', 'zh-HK');
+                setTimeout(nextCalc, 1500);
+            } else {
+                feedbackEl.innerHTML = `<span class="text-red-500">❌ 計算有誤，分母不變，只加減分子哦！</span>`;
+                speak('分母不變，只加減分子哦！', 'zh-HK');
+            }
+        }
+
+        // 文字題部分
+        function loadWordQuestion() {
+            const q = WORD_QUESTIONS[state.wordQuestionIndex];
+            document.getElementById('word-question-text').innerText = q.q;
+            
+            const optionContainer = document.getElementById('word-question-options');
+            optionContainer.innerHTML = '';
+            
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white hover:bg-orange-100 text-slate-700 font-extrabold p-3 rounded-2xl border-2 border-orange-200 shadow-sm transition text-center text-sm";
+                btn.innerText = opt;
+                btn.onclick = () => checkWordQuestion(opt);
+                optionContainer.appendChild(btn);
+            });
+        }
+
+        function checkWordQuestion(selectedOpt) {
+            const q = WORD_QUESTIONS[state.wordQuestionIndex];
+            const feedbackEl = document.getElementById('addsub-feedback');
+
+            if (selectedOpt === q.ans) {
+                feedbackEl.innerHTML = `<span class="text-green-600">🎉 做得好！文字題解鎖正確！ (+${q.points * 2} 星)</span>`;
+                addStars(q.points * 2, `解鎖文字題-${state.wordQuestionIndex+1}`);
+                speak('文字題也答對了，做得好！', 'zh-HK');
+                
+                setTimeout(() => {
+                    nextWordQuestion();
+                }, 1500);
+            } else {
+                feedbackEl.innerHTML = `<span class="text-red-500">❌ 算出來的結果不對喔，再看仔細。</span>`;
+                speak('再看仔細題目。', 'zh-HK');
+            }
+        }
+
+        function nextWordQuestion() {
+            state.wordQuestionIndex = (state.wordQuestionIndex + 1) % WORD_QUESTIONS.length;
+            loadWordQuestion();
+            document.getElementById('addsub-feedback').innerText = "";
+        }
+
+        // ==================== Report進度 WhatsApp 分享與 Modal ====================
+        function openReportModal() {
+            document.getElementById('report-preview-name').innerText = state.chefName;
+            document.getElementById('report-preview-stars').innerText = state.stars + ' 顆';
+            
+            const taskArr = Array.from(state.completedTasks);
+            document.getElementById('report-preview-tasks').innerText = taskArr.length > 0 ? taskArr.join('、') : '還在努力廚房大作戰中！';
+
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+
+        function generateReportText() {
+            const taskArr = Array.from(state.completedTasks);
+            const tasksText = taskArr.length > 0 ? taskArr.join('、') : '分數基礎觀念累積';
+            return `🎉 【分數歡樂餐廳】學習成果報告 🍕🧁\n\n親愛的家長：\n小廚神「${state.chefName}」今天在分數歡樂餐廳努力學習，取得了超棒的成績！\n\n🌟 累計黃金星星：${state.stars} 顆星\n🎯 順利通關的挑戰：\n✅ ${tasksText}\n\n多鼓勵孩子，他學得又快又開心！💪\n🎯 孩子也在這款乘法九因歌學習：https://logosparents.github.io/timestable/ 搭配複習中唷！`;
+        }
+
+        function shareViaWhatsApp() {
+            const text = encodeURIComponent(generateReportText());
+            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+        }
+
+        function copyReportToClipboard() {
+            const text = generateReportText();
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            alert("📋 成績報告已成功複製到剪貼簿！可以貼到任何地方給爸爸媽媽看唷！");
+        }
+
+        // 頁面加載就緒
+        window.onload = function() {
+            switchScreen('home');
+        };
+    </script>
+</body>
+</html>
